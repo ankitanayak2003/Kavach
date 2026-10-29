@@ -1,4 +1,5 @@
 from fastapi import APIRouter
+from app.core.config import settings
 
 router = APIRouter()
 
@@ -10,4 +11,5 @@ def get_health() -> dict[str, str]:
         "status": "healthy",
         "service": "kavach-api",
         "version": "0.1.0",
+        "environment": settings.APP_ENV,
     }

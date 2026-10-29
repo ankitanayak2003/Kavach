@@ -9,6 +9,7 @@ def test_health_endpoint_returns_ok(client: TestClient) -> None:
     assert data["status"] == "healthy"
     assert data["service"] == "kavach-api"
     assert data["version"] == "0.1.0"
+    assert data["environment"] == "development"
 
 
 def test_root_endpoint_metadata(client: TestClient) -> None:
@@ -17,4 +18,5 @@ def test_root_endpoint_metadata(client: TestClient) -> None:
     assert response.status_code == 200
     data = response.json()
     assert data["app"] == "Kavach"
+    assert data["environment"] == "development"
     assert data["health"] == "/api/v1/health"
