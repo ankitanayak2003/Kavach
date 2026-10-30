@@ -4,6 +4,7 @@ FastAPI Application Entry Point
 """
 
 from fastapi import FastAPI
+from app.api.router import api_router
 from app.core.config import settings
 
 # Tag metadata for documentation grouping
@@ -11,6 +12,10 @@ tags_metadata = [
     {
         "name": "General",
         "description": "General platform information and discovery endpoints.",
+    },
+    {
+        "name": "Health",
+        "description": "Liveness and readiness health check probe endpoints.",
     },
 ]
 
@@ -35,6 +40,9 @@ app = FastAPI(
     },
 )
 
+# Register modular API routes
+app.include_router(api_router, prefix=settings.API_V1_PREFIX)
+
 
 @app.get("/", summary="Platform Metadata", tags=["General"])
 def read_root() -> dict[str, str]:
@@ -47,6 +55,8 @@ def read_root() -> dict[str, str]:
         "docs": "/docs",
         "redoc": "/redoc",
         "openapi": "/openapi.json",
+        "health": f"{settings.API_V1_PREFIX}/health",
+        "ready": f"{settings.API_V1_PREFIX}/ready",
     }
 
 
