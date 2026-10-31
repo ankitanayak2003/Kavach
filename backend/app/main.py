@@ -19,19 +19,16 @@ tags_metadata = [
     },
 ]
 
-# FastAPI application initialization with comprehensive metadata
+# FastAPI application initialization consuming centralized settings
 app = FastAPI(
     title=settings.APP_NAME,
-    description=(
-        "Kavach is an AI-assisted application security testing platform designed "
-        "to orchestrate dynamic vulnerability scanners (OWASP ZAP, Nuclei), "
-        "headless browser crawling (Playwright), and AI-driven vulnerability triage."
-    ),
+    description=settings.APP_DESCRIPTION,
     version=settings.APP_VERSION,
+    debug=settings.DEBUG,
     openapi_tags=tags_metadata,
-    docs_url="/docs",
-    redoc_url="/redoc",
-    openapi_url="/openapi.json",
+    docs_url=settings.DOCS_URL,
+    redoc_url=settings.REDOC_URL,
+    openapi_url=settings.OPENAPI_URL,
     contact={
         "name": "Kavach Security Team",
     },
@@ -45,16 +42,17 @@ app.include_router(api_router, prefix=settings.API_V1_PREFIX)
 
 
 @app.get("/", summary="Platform Metadata", tags=["General"])
-def read_root() -> dict[str, str]:
+def read_root() -> dict[str, str | bool]:
     """Root endpoint returning basic platform identification and documentation URLs."""
     return {
         "title": settings.APP_NAME,
-        "description": "AI-assisted application security testing platform",
+        "description": settings.APP_DESCRIPTION,
         "version": settings.APP_VERSION,
         "environment": settings.APP_ENV,
-        "docs": "/docs",
-        "redoc": "/redoc",
-        "openapi": "/openapi.json",
+        "debug": settings.DEBUG,
+        "docs": settings.DOCS_URL,
+        "redoc": settings.REDOC_URL,
+        "openapi": settings.OPENAPI_URL,
         "health": f"{settings.API_V1_PREFIX}/health",
         "ready": f"{settings.API_V1_PREFIX}/ready",
     }
@@ -67,6 +65,6 @@ if __name__ == "__main__":
         "app.main:app",
         host=settings.APP_HOST,
         port=settings.APP_PORT,
-        reload=(settings.APP_ENV == "development"),
+        reload=(settings.DEBUG or settings.is_development),
         log_level=settings.LOG_LEVEL.lower(),
     )

@@ -11,6 +11,7 @@ def test_app_initialization() -> None:
     assert app.title == "Kavach"
     assert "AI-assisted application security testing platform" in app.description
     assert app.version == "0.1.0"
+    assert app.debug is False
     assert app.docs_url == "/docs"
     assert app.redoc_url == "/redoc"
     assert app.openapi_url == "/openapi.json"
@@ -25,6 +26,8 @@ def test_root_endpoint_metadata(client: TestClient) -> None:
     assert data["title"] == "Kavach"
     assert "AI-assisted" in data["description"]
     assert data["version"] == "0.1.0"
+    assert data["environment"] == "development"
+    assert data["debug"] is False
     assert data["docs"] == "/docs"
     assert data["redoc"] == "/redoc"
     assert data["openapi"] == "/openapi.json"
